@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "declaration": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "isolatedModules": true,
+    "lib": ["es2019", "dom"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitReturns": false,
+    "outDir": "dist",
+    "rootDir": "lib",
+    "skipLibCheck": true,
+    "strict": false,
+    "target": "es2019",
+    "useUnknownInCatchVariables": true
+  },
+  "exclude": ["dist/**"],
+  "include": ["lib/**/*"]
+}
