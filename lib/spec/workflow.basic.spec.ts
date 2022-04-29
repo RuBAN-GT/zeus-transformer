@@ -14,10 +14,12 @@ class ListCards {
 
 const chain = Chain('https://faker.graphqleditor.com/a-team/olympus/graphql');
 
-describe('Basic workflow', () => {
+xdescribe('Basic workflow', () => {
   it('simple request', async () => {
     const query = queryGlobalBuilder.build(ListCards);
-    const response: any = await chain('query')(query);
+    const response: any = await chain('query')(query as any);
+
+    await chain('query')({ cardById: [{ cardId: 'hello' }, { id: true }] })
 
     expect(Array.isArray(response.listCards)).toBe(true);
     expect(response.listCards.length > 0).toBe(true);

@@ -1,12 +1,8 @@
-import { ClassConstructor } from 'lib/defs';
-import { entityGlobalManager } from '../helpers.globals';
+import { ComplexTarget } from '../defs';
+import { FieldOptions, GlobalsManager } from '../core';
 
-export interface FieldDecoratorMetadata<T> {
-  type?: ClassConstructor<T>;
-}
-
-export function Field<T>({ type }: FieldDecoratorMetadata<T> = {}): PropertyDecorator {
-  return <U>(target: ClassConstructor<U> | Function, propertyName: string): void => {
-    entityGlobalManager.registerEntity(target).registerField(propertyName, type);
+export function Field<T>(metadata: FieldOptions<T> = {}): PropertyDecorator {
+  return <U>(target: ComplexTarget<U>, propertyName: string): void => {
+    GlobalsManager.getEntityManager().registerEntity(target).registerField(propertyName, metadata);
   };
 }

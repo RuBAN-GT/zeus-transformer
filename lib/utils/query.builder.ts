@@ -1,21 +1,42 @@
 import { EntityManager } from '../core';
-import { ClassConstructor } from '../defs';
+import { ComplexTarget, DeepTarget } from '../defs';
+
+import { isTarget } from './helpers';
+
+type QueryMap = Record<string, any> | [Record<string, any>, Record<string, any>];
 
 export class QueryBuilder {
-  constructor(protected readonly entityManager: EntityManager) {}
+  constructor(protected readonly entityManager: EntityManager = new EntityManager()) {}
 
-  public build<T>(entity: ClassConstructor<T> | Function): any {
-    const metadata = this.entityManager.findEntity(entity);
+  public build<T>(input: DeepTarget<T>): QueryMap {
+    const fields = isTarget(input) ? this.getEntityFields(input as ComplexTarget<T>) : input;
+
+    return Object.keys(fields).reduce((acc, field) => {
+      if (Array.isArray(fields[field])) {
+        const [args, sub] = fields[field];
+        acc[field] = [args, this.build(sub)];
+      } else {
+        acc[field] = fields[field] !== true ? this.build(fields[field]) : true;
+      }
+
+      return acc;
+    }, {});
+  }
+
+  protected getEntityFields<T>(input: ComplexTarget<T>): QueryMap {
+    const metadata = this.entityManager.findEntity(input as any);
     if (!metadata) {
       return {};
     }
 
+    const args = metadata.getArgs();
     const fields = metadata.getFields();
-    return Object.keys(fields).reduce((acc, field) => {
-      const sub = this.entityManager.findEntity(fields[field]);
-      acc[field] = sub ? this.build(sub.entity) : true;
-
+    const fieldsMap = Object.keys(fields).reduce((acc, field) => {
+      const { type: fieldType } = fields[field];
+      acc[field] = this.entityManager.hasEntity(fieldType) ? fieldType : true;
       return acc;
-    }, {} as Record<string | symbol, any>)
+    }, {});
+
+    return args ? [args, fieldsMap] : fieldsMap;
   }
 }

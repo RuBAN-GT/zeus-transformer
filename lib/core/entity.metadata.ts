@@ -2,16 +2,34 @@ import 'reflect-metadata';
 
 import { ClassConstructor } from '../defs';
 
-export class EntityMetadata {
-  protected readonly fieldsMap: Map<string | symbol, any>;
+export interface FieldMetadata<T = any> {
+  type: ClassConstructor<T>;
+}
 
-  constructor(public readonly entity: Function) {
+export interface FieldOptions<T = any> {
+  type?: FieldMetadata<T>['type'];
+}
+
+export interface EntityOptions {
+  args?: Record<string, any>;
+}
+
+export type FieldMetadataMap<T = any> = Record<string | symbol, FieldMetadata<T>>;
+
+export class EntityMetadata {
+  protected readonly args?: Record<string, any>;
+  protected readonly fieldsMap: Map<string | symbol, FieldMetadata>;
+
+  constructor(public readonly entity: Function, options: EntityOptions = {}) {
     this.fieldsMap = new Map();
+    this.args = options.args;
   }
 
-  public registerField<T>(property: string | symbol, basicType?: ClassConstructor<T>): void {
-    const fieldType = basicType || Reflect.getMetadata('design:type', this.entity, property);
-    this.fieldsMap.set(property, fieldType);
+  public registerField<T>(property: string | symbol, options: FieldOptions<T>): void {
+    this.fieldsMap.set(property, {
+      ...options,
+      type: options.type || Reflect.getMetadata('design:type', this.entity, property),
+    });
   }
 
   public findField(property: string | symbol): any {
@@ -26,7 +44,11 @@ export class EntityMetadata {
     return [...this.fieldsMap.keys()];
   }
 
-  public getFields(): Record<string | symbol, any> {
+  public getFields(): FieldMetadataMap {
     return Object.fromEntries(this.fieldsMap);
+  }
+
+  public getArgs(): Record<string, any> {
+    return this.args;
   }
 }
