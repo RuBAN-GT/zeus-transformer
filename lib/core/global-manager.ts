@@ -1,6 +1,6 @@
-import { EntityManager } from './entity.manager';
+import { EntityManager } from './entity-manager';
 
-export namespace GlobalsManager {
+export namespace GlobalManager {
   export let entityManager: EntityManager;
 
   export function getEntityManager(): EntityManager {

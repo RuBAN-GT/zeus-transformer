@@ -1,5 +1,6 @@
-import { ComplexTarget } from '../defs';
-import { EntityMetadata, EntityOptions } from './entity.metadata';
+import { ComplexTarget } from '../../defs';
+import { EntityOptions } from './entity.defs';
+import { EntityMetadata } from './entity.metadata';
 
 const getProto = (target: ComplexTarget): ComplexTarget => (target.prototype || target);
 
@@ -10,9 +11,10 @@ export class EntityManager {
     this.entities = new Map();
   }
 
-  public registerEntity<T>(entity: ComplexTarget<T>, options: EntityOptions = {}): EntityMetadata {
+  public defineEntity<T>(entity: ComplexTarget<T>, options: EntityOptions = {}): EntityMetadata {
     const metadata = this.findEntity(entity);
     if (metadata) {
+      metadata.defineOptions(options);
       return metadata;
     }
 
