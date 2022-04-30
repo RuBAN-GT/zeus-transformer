@@ -7,6 +7,7 @@ import { isTarget } from '../../utils';
 export class QueryBuilder {
   constructor(protected readonly entityManager: EntityManager = new EntityManager()) {}
 
+  // @TODO Think about types with generics
   public build(input: Query, context?: any): Selector {
     return Object.keys(input).reduce((acc: Selector, key: string) => {
       acc[key] = this.buildSelector(input[key], context);

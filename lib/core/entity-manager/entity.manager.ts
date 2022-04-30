@@ -2,7 +2,7 @@ import { ComplexTarget } from '../../defs';
 import { EntityOptions } from './entity.defs';
 import { EntityMetadata } from './entity.metadata';
 
-const getProto = (target: ComplexTarget): ComplexTarget => (target.prototype || target);
+const getProto = (target: ComplexTarget): ComplexTarget => (target && target.prototype || target);
 
 export class EntityManager {
   protected readonly entities: Map<ComplexTarget, EntityMetadata>;

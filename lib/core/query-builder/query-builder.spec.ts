@@ -1,37 +1,14 @@
 import { GlobalManager } from '../global-manager';
-import { Entity, Field } from '../../decorators';
 import { QueryBuilder } from './query-builder';
 
-class Primitive {
-  @Field() public id: number | string;
-  @Field() public name: string;
-}
-
-class Data {
-  @Field() data: Primitive;
-}
-
-class Collection {
-  @Field({ type: Primitive }) collection: Primitive[];
-}
-
-@Entity({ args: { take: 50 } })
-class PrimitiveWithInput {
-  @Field() public id: number | string;
-  @Field() public name: string;
-}
-
-@Entity({ args: () => ({ take: 50 }) })
-class PrimitiveWithFuncInput {
-  @Field() public id: number | string;
-  @Field() public name: string;
-}
-
-@Entity({ args: (context: any) => ({ take: context.take }) })
-class PrimitiveWithContextInput {
-  @Field() public id: number | string;
-  @Field() public name: string;
-}
+import {
+  Primitive,
+  Data,
+  Collection,
+  PrimitiveWithInput,
+  PrimitiveWithFuncInput,
+  PrimitiveWithContextInput,
+} from '../../spec/helpers/entities';
 
 describe('QueryBuilder', () => {
   const queryBuilder = new QueryBuilder(GlobalManager.getEntityManager());
@@ -77,6 +54,7 @@ describe('QueryBuilder', () => {
       });
 
       // @TODO Implement me
+      //
       // it('builds a query with complex variables', () => {
       //   const input = { input: 'query' };
       //   const query = queryBuilder.build({ response: [input, PrimitiveWithInput] });
