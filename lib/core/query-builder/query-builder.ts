@@ -7,20 +7,20 @@ import { isTarget } from '../../utils';
 export class QueryBuilder {
   constructor(protected readonly entityManager: EntityManager = new EntityManager()) {}
 
-  public build(input: Query): Selector {
+  public build(input: Query, context?: any): Selector {
     return Object.keys(input).reduce((acc: Selector, key: string) => {
-      acc[key] = this.buildSelector(input[key]);
+      acc[key] = this.buildSelector(input[key], context);
       return acc;
     }, {});
   }
 
-  protected buildSelector(input: NodeValue<true | ComplexTarget>): NodeValue<true> {
+  protected buildSelector(input: NodeValue<true | ComplexTarget>, context?: any): NodeValue<true> {
     if (input === true) {
       return true;
     }
     if (isTarget(input)) {
-      const tree = this.buildSelectorByTarget(input as ComplexTarget);
-      return this.buildSelector(tree);
+      const tree = this.buildSelectorByTarget(input as ComplexTarget, context);
+      return this.buildSelector(tree, context);
     }
     if (Array.isArray(input)) {
       return [input[0], this.buildSelectorByNode(input[1])];
@@ -36,13 +36,13 @@ export class QueryBuilder {
     }, {});
   }
 
-  protected buildSelectorByTarget(target: ComplexTarget): TreeNode<true | ComplexTarget> {
+  protected buildSelectorByTarget(target: ComplexTarget, context?: any): TreeNode<true | ComplexTarget> {
     const metadata = this.entityManager.findEntity(target);
     if (!metadata) {
       throw new Error(`Unknown entity ${target.constructor.name}`);
     }
 
-    const args = metadata.getArgs();
+    const args = metadata.getArgs(context);
     const query = this.buildQueryByFields(metadata.getFields());
 
     return args ? [args, query] : query;

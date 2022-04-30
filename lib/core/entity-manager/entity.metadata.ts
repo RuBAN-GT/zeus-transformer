@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 
 import { ComplexTarget } from '../../defs';
-import { EntityOptions, EntityFieldOptions, EntityFieldData, EntityFieldsMap } from './entity.defs';
+import { EntityOptions, EntityFieldOptions, EntityFieldData, EntityFieldsMap, EntityOptionsArgs, EntityArgsData } from './entity.defs';
 
 export class EntityMetadata {
-  protected args?: Record<string, any>;
+  protected args?: EntityOptionsArgs;
   protected readonly fields: Map<string | symbol, EntityFieldData>;
 
   constructor(public readonly entity: ComplexTarget, options: EntityOptions = {}) {
@@ -24,8 +24,11 @@ export class EntityMetadata {
     });
   }
 
-  public getArgs(): Record<string, any> {
-    return this.args;
+  public getArgs<T>(context: T): EntityArgsData | undefined {
+    if (!this.args) {
+      return;
+    }
+    return typeof this.args === 'function' ? this.args(context) : this.args;
   }
 
   public getFields(): EntityFieldsMap {

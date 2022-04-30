@@ -21,6 +21,18 @@ class PrimitiveWithInput {
   @Field() public name: string;
 }
 
+@Entity({ args: () => ({ take: 50 }) })
+class PrimitiveWithFuncInput {
+  @Field() public id: number | string;
+  @Field() public name: string;
+}
+
+@Entity({ args: (context: any) => ({ take: context.take }) })
+class PrimitiveWithContextInput {
+  @Field() public id: number | string;
+  @Field() public name: string;
+}
+
 describe('QueryBuilder', () => {
   const queryBuilder = new QueryBuilder(GlobalManager.getEntityManager());
 
@@ -51,6 +63,17 @@ describe('QueryBuilder', () => {
       it('builds a query with variable', () => {
         const query = queryBuilder.build({ response: PrimitiveWithInput });
         expect(query).toMatchObject({ response: [{ take: 50 }, { id: true, name: true }] });
+      });
+
+      it('builds a query with function args', () => {
+        const query = queryBuilder.build({ response: PrimitiveWithFuncInput });
+        expect(query).toMatchObject({ response: [{ take: 50 }, { id: true, name: true }] });
+      });
+
+      it('builds a query with args and external context', () => {
+        const context = { take: 50 };
+        const query = queryBuilder.build({ response: PrimitiveWithContextInput }, context);
+        expect(query).toMatchObject({ response: [{ take: context.take }, { id: true, name: true }] });
       });
 
       // @TODO Implement me
