@@ -1,4 +1,4 @@
-import { GlobalManager } from '../global-manager';
+import { getEntityManager } from '../../globals';
 import { QueryBuilder } from './query-builder';
 
 import {
@@ -11,7 +11,7 @@ import {
 } from '../../spec/helpers/entities';
 
 describe('QueryBuilder', () => {
-  const queryBuilder = new QueryBuilder(GlobalManager.getEntityManager());
+  const queryBuilder = new QueryBuilder(getEntityManager());
 
   describe('#build', () => {
     describe('static queries', () => {
@@ -53,13 +53,11 @@ describe('QueryBuilder', () => {
         expect(query).toMatchObject({ response: [{ take: context.take }, { id: true, name: true }] });
       });
 
-      // @TODO Implement me
-      //
-      // it('builds a query with complex variables', () => {
-      //   const input = { input: 'query' };
-      //   const query = queryBuilder.build({ response: [input, PrimitiveWithInput] });
-      //   expect(query).toMatchObject({ response: [input, [{ take: 50 }, { id: true, name: true }]] });
-      // });
+      it('builds a query with predefined args', () => {
+        const input = { input: 'query' };
+        const query = queryBuilder.build({ response: [input, Primitive] });
+        expect(query).toMatchObject({ response: [input, { id: true, name: true }] });
+      });
     });
   });
 });

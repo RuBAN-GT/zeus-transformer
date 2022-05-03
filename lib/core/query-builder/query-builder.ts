@@ -1,7 +1,7 @@
 import { EntityFieldsMap, EntityManager } from '../entity-manager';
 import { ComplexTarget } from '../../defs';
 
-import { Query, Selector, TreeNode, Tree, NodeValue } from './query-builder.defs';
+import { Query, Selector, TreeNode, Tree, NodeValue, QueryValue, QueryArgOption } from './query-builder.defs';
 import { isTarget } from '../../utils';
 
 export class QueryBuilder {
@@ -15,7 +15,7 @@ export class QueryBuilder {
     }, {});
   }
 
-  protected buildSelector(input: NodeValue<true | ComplexTarget>, context?: any): NodeValue<true> {
+  protected buildSelector(input: NodeValue<QueryValue, QueryArgOption>, context?: any): NodeValue<true> {
     if (input === true) {
       return true;
     }
@@ -24,7 +24,11 @@ export class QueryBuilder {
       return this.buildSelector(tree, context);
     }
     if (Array.isArray(input)) {
-      return [input[0], this.buildSelectorByNode(input[1])];
+      const subQuery = this.buildSelector(input[1]);
+      if (Array.isArray(subQuery) || subQuery === true) {
+        throw new Error(`Wrong arg-query construction. It can't be input or primitive.`);
+      }
+      return [input[0], subQuery];
     }
 
     return this.buildSelectorByNode(input as Tree<true | ComplexTarget>);
