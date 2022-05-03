@@ -1,3 +1,3 @@
-// Types
-export * from './entity.manager';
-export * from './entity.metadata';
+export * from './entity-manager';
+export * from './query-builder';
+export * from './entity-converter';
