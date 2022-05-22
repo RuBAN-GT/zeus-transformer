@@ -6,6 +6,7 @@ import { NodeValue, Query, QueryArgOption, QueryValue } from '../query-builder/q
 export class EntityConverter {
   constructor(protected readonly entityManager: EntityManager = new EntityManager()) {}
 
+  // @TODO Add type helpers
   public convert(query: Query, data: Record<string, any>): any {
     return this.convertNode(query, data);
   }

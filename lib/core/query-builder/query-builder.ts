@@ -8,8 +8,8 @@ export class QueryBuilder {
   constructor(protected readonly entityManager: EntityManager = new EntityManager()) {}
 
   // @TODO Think about types with generics
-  public build(input: Query, context?: any): Selector {
-    return this.buildSelector(input, context) as Selector;
+  public build<Q>(input: Q, context?: any): Selector<Q> {
+    return this.buildSelector(input as any, context) as Selector<Q>;
   }
 
   protected buildSelector(input: NodeValue<QueryValue, QueryArgOption> | Query, context?: any): NodeValue<true> {
