@@ -9,13 +9,10 @@ export class QueryBuilder {
 
   // @TODO Think about types with generics
   public build(input: Query, context?: any): Selector {
-    return Object.keys(input).reduce((acc: Selector, key: string) => {
-      acc[key] = this.buildSelector(input[key], context);
-      return acc;
-    }, {});
+    return this.buildSelector(input, context) as Selector;
   }
 
-  protected buildSelector(input: NodeValue<QueryValue, QueryArgOption>, context?: any): NodeValue<true> {
+  protected buildSelector(input: NodeValue<QueryValue, QueryArgOption> | Query, context?: any): NodeValue<true> {
     if (input === true) {
       return true;
     }
@@ -31,12 +28,12 @@ export class QueryBuilder {
       return [input[0], subQuery];
     }
 
-    return this.buildSelectorByNode(input as Tree<true | ComplexTarget>);
+    return this.buildSelectorByNode(input as Tree<true | ComplexTarget>, context);
   }
 
-  protected buildSelectorByNode(input: TreeNode<true | ComplexTarget>): Tree<true> {
+  protected buildSelectorByNode(input: TreeNode<true | ComplexTarget>, context?: any): Tree<true> {
     return Object.keys(input).reduce((acc: Tree<true>, field: string) => {
-      acc[field] = input[field] !== true ? this.buildSelector(input[field]) : true;
+      acc[field] = input[field] !== true ? this.buildSelector(input[field], context) : true;
       return acc;
     }, {});
   }

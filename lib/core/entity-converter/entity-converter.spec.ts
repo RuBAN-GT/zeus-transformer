@@ -23,6 +23,14 @@ describe('EntityConverter', () => {
       expect(data.response instanceof Primitive).toBeTruthy();
     });
 
+    it('builds a query from deep raw response', () => {
+      const response = { response: { data: { id: '1', name: 'Hello' } } };
+      const result = converter.convert({ response: { data: Primitive } }, response);
+
+      expect(typeof result.response === 'object').toBeTruthy();
+      expect(result.response.data instanceof Primitive).toBeTruthy();
+    });
+
     it('builds a query from array of primitives', () => {
       const response = { response: [{ id: '1', name: 'Hello' }] };
       const data = converter.convert({ response: Primitive }, response);

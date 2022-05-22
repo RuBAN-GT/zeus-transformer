@@ -13,4 +13,4 @@ export type Selector = RootTree<true>;
 
 export type QueryValue = true | ComplexTarget;
 export type QueryArgOption = Tree<QueryValue> | ComplexTarget;
-export type Query = RootTree<QueryValue, QueryArgOption>;
+export type Query = RootTree<QueryValue, QueryArgOption> | ComplexTarget;
