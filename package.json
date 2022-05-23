@@ -1,8 +1,8 @@
 {
   "name": "zeus-transformer",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Zeus model layer",
-  "main": "dist/index.ts",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/RuBAN-GT/zeus-transformer",
   "author": "Dmitry Ruban @RuBAN-GT",
