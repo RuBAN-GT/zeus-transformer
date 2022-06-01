@@ -6,19 +6,20 @@ import { NodeValue, Query, QueryArgOption, QueryValue } from '../query-builder/q
 export class EntityConverter {
   constructor(protected readonly entityManager: EntityManager = new EntityManager()) {}
 
+  // @TODO Add type helpers
   public convert(query: Query, data: Record<string, any>): any {
-    return Object.keys(query).reduce((acc, key) => {
-      acc[key] = this.convertNode(query[key], data[key]);
-      return acc;
-    }, {});
+    return this.convertNode(query, data);
   }
 
-  protected convertNode(queryNode: NodeValue<QueryValue, QueryArgOption>, dataNode: Record<string, any>): any {
+  protected convertNode(queryNode: NodeValue<QueryValue, QueryArgOption> | Query, dataNode: Record<string, any>): any {
     if (Array.isArray(queryNode)) {
       return this.convertNode(queryNode[1], dataNode);
     }
     if (this.entityManager.hasEntity(queryNode as ComplexTarget)) {
       return this.convertEntity(queryNode as ClassConstructor<any>, dataNode);
+    }
+    if (typeof dataNode === 'object') {
+      return this.convertTree(queryNode, dataNode);
     }
 
     return dataNode;
@@ -29,6 +30,13 @@ export class EntityConverter {
       return data.map((item) => this.generateEntity(target, item));
     }
     return this.generateEntity(target, data);
+  }
+
+  protected convertTree(query: NodeValue<QueryValue, QueryArgOption> | Query, data: Record<string, any>): any {
+    return Object.keys(query).reduce((acc, key) => {
+      acc[key] = this.convertNode(query[key], data[key]);
+      return acc;
+    }, {});
   }
 
   protected generateEntity(target: ClassConstructor<any>, data: Record<string, any>): any {

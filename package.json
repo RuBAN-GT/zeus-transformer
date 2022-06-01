@@ -1,8 +1,8 @@
 {
   "name": "zeus-transformer",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Zeus model layer",
-  "main": "dist/index.ts",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/RuBAN-GT/zeus-transformer",
   "author": "Dmitry Ruban @RuBAN-GT",
@@ -15,6 +15,7 @@
     "lint": "eslint . --ext .ts --config .eslintrc.js",
     "start": "ts-node lib/index.ts",
     "build": "tsup lib/index.ts --dts",
+    "build:watch": "tsup lib/index.ts --dts --watch",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:seed": "zeus https://faker.graphqleditor.com/a-team/olympus/graphql lib/spec/dummy --node --graphql lib/spec/dummy"
@@ -23,7 +24,6 @@
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
-    "reflect-metadata": "^0.1.13",
     "@types/jest": "^27.4.1",
     "@types/node": "^17.0.25",
     "@types/node-fetch": "^2.6.1",
@@ -37,6 +37,7 @@
     "jest": "^27.5.1",
     "node-fetch": "^2.6.7",
     "prettier": "^2.6.2",
+    "reflect-metadata": "^0.1.13",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
     "tsup": "^5.12.6",
